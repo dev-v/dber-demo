@@ -6,7 +6,7 @@ import feign.hystrix.FallbackFactory;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.stereotype.Component;
 
-@FeignClient(name = "demo-service", fallbackFactory = UserClientFallbackFactory.class)
+@FeignClient(name = "dber-demo-service", fallbackFactory = UserClientFallbackFactory.class)
 public interface UserClient extends UserApi {
 }
 

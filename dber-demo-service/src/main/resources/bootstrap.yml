@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo-service
+    name: dber-demo-service
   profiles:
     active: dev
   cloud:
