@@ -8,6 +8,6 @@ dependencies {
   compile('org.springframework.cloud:spring-cloud-starter-eureka')
   compile('org.springframework.boot:spring-boot-starter-actuator')
 
-  compile("com.dber:dber-demo-api:$version")
+  compile("com.dber:demo-api:$version")
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }

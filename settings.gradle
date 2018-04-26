@@ -1,5 +1,5 @@
 rootProject.name = 'demo'
 
-include 'dber-demo-api'
-include 'dber-demo-client'
-include 'dber-demo-service'
+include 'demo-api'
+include 'demo-client'
+include 'demo-service'
