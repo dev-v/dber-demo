@@ -1,9 +1,12 @@
 package com.dber.demo.controller;
 
 import com.dber.demo.api.UserApi;
-import com.dber.demo.api.entity.User;
+import com.dber.demo.entity.User;
+import com.dber.demo.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Random;
@@ -14,11 +17,16 @@ public class UserController implements UserApi {
 
   private long id = new Random().nextLong();
 
+  @Autowired
+  private UserService userService;
+
   @Override
   public User get() {
-    User user = new User();
-    user.setAddress("测试用户");
-    user.setId(id);
-    return user;
+    return userService.get(1);
+  }
+
+  @Override
+  public int update(@RequestBody User user) {
+    return userService.update(user);
   }
 }

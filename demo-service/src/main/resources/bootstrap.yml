@@ -25,3 +25,16 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+dber:
+  database:
+    host: localhost
+    port: 3306
+    database: dber_demo
+    username: root
+    password: cwl123
+    parameters: characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true
+    initialSize: 1
+    maxActive: 2
+    minIdle: 1
+logging:
+  level: debug

@@ -1,0 +1,137 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dber.demo.mapper.UserMapper">
+
+  <select id="get" resultType="user">
+    SELECT *
+    FROM user
+    WHERE id = #{id}
+  </select>
+
+  <delete id="del">
+    DELETE FROM user
+    WHERE id = #{id}
+  </delete>
+
+  <select id="gets" resultType="user">
+    SELECT * FROM user WHERE id IN
+    <foreach item="item" index="index" collection="array" open="("
+             separator="," close=")">#{item}
+    </foreach>
+  </select>
+
+  <sql id="maxLimit">
+    limit 1000
+  </sql>
+
+  <delete id="dels">
+    delete from user where id in
+    <foreach item="item" index="index" collection="array" open="("
+             separator="," close=")">#{item}
+    </foreach>
+    <include refid="maxLimit"></include>
+  </delete>
+
+  <delete id="delByCondition">
+    delete from user
+    <include refid="where"></include>
+  </delete>
+
+  <sql id="insertList">
+    (
+    <trim suffixOverrides=",">
+      <if test="id!=null">
+        id,
+      </if>
+      <if test="name!=null">
+        name,
+      </if>
+    </trim>
+    ) values (
+    <trim suffixOverrides=",">
+      <if test="id!=null">
+        #{id},
+      </if>
+      <if test="name!=null">
+        #{name},
+      </if>
+    </trim>
+
+    )
+  </sql>
+
+  <!-- 注意检查非空和主键自增属性 -->
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert
+    into user
+    <include refid="insertList"></include>
+  </insert>
+
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <!-- 不包含数据库类型为TIMESTAMP（由数据库自动管理）的列 -->
+    insert into user
+    <include refid="insertList"></include>
+    ON DUPLICATE KEY
+    UPDATE
+    <trim suffixOverrides=",">
+      <if test="name != null ">
+        name=values(name),
+      </if>
+    </trim>
+  </insert>
+
+  <sql id="queryList">
+    SELECT
+      id,
+      name
+    FROM
+      user
+  </sql>
+
+  <sql id="where">
+    <trim prefix="WHERE" prefixOverrides="AND">
+      <if test="id != null">
+        AND id=#{id}
+      </if>
+      <if test="name != null">
+        AND name=#{name}
+      </if>
+    </trim>
+  </sql>
+
+  <select id="query" resultType="user">
+    <include refid="queryList"></include>
+    <include refid="where"></include>
+  </select>
+
+  <select id="queryWithoutPage" resultType="user">
+    <include refid="queryList"></include>
+    <include refid="where"></include>
+    <include refid="maxLimit"></include>
+  </select>
+
+  <select id="queryOne" resultType="user">
+    select * from user
+    <include refid="where"></include>
+    limit 1
+  </select>
+
+  <select id="has" resultType="int">
+    select 1 from user
+    <include refid="where"></include>
+    limit 1
+  </select>
+
+  <select id="count" resultType="int">
+    select count(*) from user
+    <include refid="where"></include>
+  </select>
+
+  <select id="getIds" resultType="long">
+    select id from user
+    <include refid="where"></include>
+    <include refid="maxLimit"></include>
+  </select>
+
+</mapper>
