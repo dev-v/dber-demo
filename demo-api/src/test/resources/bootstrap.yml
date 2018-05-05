@@ -35,7 +35,9 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
-logging:
-  level:
-    com:
-      dber: debug
+
+dber:
+  service:
+    demo-service:
+#     客户端指定调用的服务名称
+      name: demo-service

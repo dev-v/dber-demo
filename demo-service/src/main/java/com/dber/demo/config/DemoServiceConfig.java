@@ -1,5 +1,6 @@
 package com.dber.demo.config;
 
+import com.dber.platform.config.PlatformWebServiceConfig;
 import com.dber.platform.mybatis.plugin.pagination.PaginationInterceptor;
 import com.dber.platform.util.DBUtil;
 import com.dber.tool.config.SystemConfig;
@@ -12,6 +13,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -22,8 +24,9 @@ import java.io.IOException;
 @Configuration
 @EnableAutoConfiguration
 @EnableTransactionManagement
-@ComponentScan("com.dber.demo")
 @EnableConfigurationProperties({SystemConfig.class})
+@Import(PlatformWebServiceConfig.class)
+@ComponentScan("com.dber.demo")
 @MapperScan(basePackages = {"com.dber.demo.mapper"})
 public class DemoServiceConfig {
 
@@ -67,4 +70,5 @@ public class DemoServiceConfig {
 
     return platSqlSessionFactoryBean;
   }
+
 }

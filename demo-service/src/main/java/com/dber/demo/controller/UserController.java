@@ -6,7 +6,6 @@ import com.dber.demo.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Random;
@@ -21,12 +20,12 @@ public class UserController implements UserApi {
   private UserService userService;
 
   @Override
-  public User get() {
-    return userService.get(1);
+  public User get(long id) {
+    return userService.get(id);
   }
 
   @Override
-  public int update(@RequestBody User user) {
+  public int update(User user) {
     return userService.update(user);
   }
 }

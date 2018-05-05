@@ -1,5 +1,4 @@
 rootProject.name = 'demo'
 
 include 'demo-api'
-include 'demo-client'
 include 'demo-service'
