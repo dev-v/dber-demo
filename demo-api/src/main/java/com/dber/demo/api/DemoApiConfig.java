@@ -1,4 +1,4 @@
-package com.dber.demo;
+package com.dber.demo.api;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -7,9 +7,9 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableFeignClients(basePackages = "com.dber.demo")
 @EnableDiscoveryClient
 @EnableAutoConfiguration
+@EnableFeignClients(basePackages = "com.dber.demo.api")
 @ConditionalOnExpression("#{!environment['spring.application.name'].endsWith('" + DemoApiConfig.SERVICE_NAME + "')}")
 public class DemoApiConfig {
   public static final String SERVICE_NAME = "demo-service";

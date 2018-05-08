@@ -21,6 +21,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.io.IOException;
 
+/**
+ * <li>文件名称: DemoService.java</li>
+ * <li>修改记录: ...</li>
+ * <li>内容摘要: ...</li>
+ * <li>其他说明: ...</li>
+ * 
+ * @version 1.0
+ * @since 2017年12月21日
+ * @author dev-v
+ */
+
 @Configuration
 @EnableAutoConfiguration
 @EnableTransactionManagement
@@ -29,46 +40,44 @@ import java.io.IOException;
 @ComponentScan("com.dber.demo")
 @MapperScan(basePackages = {"com.dber.demo.mapper"})
 public class DemoServiceConfig {
+	@Autowired
+	private SystemConfig systemConfig;
 
-  @Autowired
-  private SystemConfig systemConfig;
+	@Bean
+	public DataSource demoDataSource() {
+		DataSource demoDataSource = DBUtil.dataSource(systemConfig.getDatabase());
+		return demoDataSource;
+	}
 
-  @Bean
-  public DataSource platDataSource() {
-    DataSource platDataSource = DBUtil.dataSource(systemConfig.getDatabase());
-    return platDataSource;
-  }
+	@Bean
+	public DataSourceTransactionManager demoTransactionManager() {
+		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(demoDataSource());
+		return transactionManager;
+	}
 
-  @Bean
-  public DataSourceTransactionManager platTransactionManager() {
-    DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(platDataSource());
-    return transactionManager;
-  }
+	@Bean
+	public org.apache.ibatis.session.Configuration demoMybatisConfiguration() {
+		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+		configuration.setMapUnderscoreToCamelCase(true);
+		configuration.getTypeAliasRegistry().registerAliases("com.dber.demo.api.entity");
+		return configuration;
+	}
 
-  @Bean
-  public org.apache.ibatis.session.Configuration platMybatisConfiguration() {
-    org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
-    configuration.setMapUnderscoreToCamelCase(true);
-    configuration.getTypeAliasRegistry().registerAliases("com.dber.demo.entity");
-    return configuration;
-  }
+	@Bean
+	public SqlSessionFactoryBean demoSqlSessionFactoryBean() throws IOException {
+		SqlSessionFactoryBean demoSqlSessionFactoryBean = new SqlSessionFactoryBean();
 
-  @Bean
-  public SqlSessionFactoryBean platSqlSessionFactoryBean() throws IOException {
-    SqlSessionFactoryBean platSqlSessionFactoryBean = new SqlSessionFactoryBean();
+		demoSqlSessionFactoryBean.setDataSource(demoDataSource());
 
-    platSqlSessionFactoryBean.setDataSource(platDataSource());
+		demoSqlSessionFactoryBean.setConfiguration(demoMybatisConfiguration());
 
-    platSqlSessionFactoryBean.setConfiguration(platMybatisConfiguration());
+		PathMatchingResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
+		demoSqlSessionFactoryBean
+				.setMapperLocations(resourceResolver.getResources("classpath*:/mapper/*_mapper.xml"));
 
-    PathMatchingResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
-    platSqlSessionFactoryBean
-            .setMapperLocations(resourceResolver.getResources("classpath*:/mapper/*_mapper.xml"));
+		Interceptor[] interceptors = { PaginationInterceptor.getInstance() };
+		demoSqlSessionFactoryBean.setPlugins(interceptors);
 
-    Interceptor[] interceptors = {PaginationInterceptor.getInstance()};
-    platSqlSessionFactoryBean.setPlugins(interceptors);
-
-    return platSqlSessionFactoryBean;
-  }
-
+		return demoSqlSessionFactoryBean;
+	}
 }

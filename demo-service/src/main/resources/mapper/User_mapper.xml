@@ -3,17 +3,4 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dber.demo.mapper.UserMapper">
 
-  <update id="update" parameterType="user">
-    update user
-    <set>
-      <if test="name != null ">
-        name=#{name},
-      </if>
-      <if test="address != null ">
-        address=#{address},
-      </if>
-    </set>
-    where id = #{id}
-  </update>
-
 </mapper>

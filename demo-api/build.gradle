@@ -9,5 +9,7 @@ dependencies {
   compile('org.springframework.boot:spring-boot-starter-actuator')
   compile('org.springframework.boot:spring-boot-starter-web')
 
+  compile("com.dber:platform-api:$version")
+
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }

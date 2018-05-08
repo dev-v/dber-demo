@@ -3,27 +3,46 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dber.demo.mapper.UserMapper">
 
-  <select id="get" resultType="user">
-    SELECT *
-    FROM user
-    WHERE id = #{id}
-  </select>
+  <sql id="insertList">
+    (
+      <trim suffixOverrides=",">
+			<if test="id!=null">
+				id,
+			</if>
+			<if test="name!=null">
+				name,
+			</if>
+			<if test="address!=null">
+				address,
+			</if>
+		</trim>
+		) values (
+		<trim suffixOverrides=",">
+			<if test="id!=null">
+				#{id},
+			</if>
+			<if test="name!=null">
+				#{name},
+			</if>
+			<if test="address!=null">
+				#{address},
+			</if>
+		</trim>
+
+    )
+  </sql>
+
+  <!-- 注意检查非空和主键自增属性 -->
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert
+    into user
+    <include refid="insertList"></include>
+  </insert>
 
   <delete id="del">
     DELETE FROM user
     WHERE id = #{id}
   </delete>
-
-  <select id="gets" resultType="user">
-    SELECT * FROM user WHERE id IN
-    <foreach item="item" index="index" collection="array" open="("
-             separator="," close=")">#{item}
-    </foreach>
-  </select>
-
-  <sql id="maxLimit">
-    limit 1000
-  </sql>
 
   <delete id="dels">
     delete from user where id in
@@ -38,35 +57,20 @@
     <include refid="where"></include>
   </delete>
 
-  <sql id="insertList">
-    (
-    <trim suffixOverrides=",">
-      <if test="id!=null">
-        id,
-      </if>
-      <if test="name!=null">
-        name,
-      </if>
-    </trim>
-    ) values (
-    <trim suffixOverrides=",">
-      <if test="id!=null">
-        #{id},
-      </if>
-      <if test="name!=null">
-        #{name},
-      </if>
-    </trim>
 
-    )
-  </sql>
+  <update id="update">
+    update user
+    <set>
+      			<if test="name != null ">
+				name=#{name},
+			</if>
+			<if test="address != null ">
+				address=#{address},
+			</if>
 
-  <!-- 注意检查非空和主键自增属性 -->
-  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-    insert
-    into user
-    <include refid="insertList"></include>
-  </insert>
+    </set>
+    where id = #{id}
+  </update>
 
   <insert id="save" useGeneratedKeys="true" keyProperty="id">
     <!-- 不包含数据库类型为TIMESTAMP（由数据库自动管理）的列 -->
@@ -75,47 +79,54 @@
     ON DUPLICATE KEY
     UPDATE
     <trim suffixOverrides=",">
-      <if test="name != null ">
-        name=values(name),
-      </if>
+      			<if test="name != null ">
+				name=values(name),
+			</if>
+			<if test="address != null ">
+				address=values(address),
+			</if>
+
     </trim>
   </insert>
 
-  <sql id="queryList">
-    SELECT
-      id,
-      name
-    FROM
-      user
-  </sql>
 
-  <sql id="where">
-    <trim prefix="WHERE" prefixOverrides="AND">
-      <if test="id != null">
-        AND id=#{id}
-      </if>
-      <if test="name != null">
-        AND name=#{name}
-      </if>
-    </trim>
-  </sql>
+  <select id="get" resultType="User">
+    SELECT *
+    FROM user
+    WHERE id = #{id}
+  </select>
 
-  <select id="query" resultType="user">
+  <select id="gets" resultType="User">
+    SELECT * FROM user WHERE id IN
+    <foreach item="item" index="index" collection="array" open="("
+             separator="," close=")">#{item}
+    </foreach>
+  </select>
+
+  <select id="getByCondition" resultType="User">
+    select * from user
+    <include refid="where"></include>
+    limit 1
+  </select>
+
+  <select id="getIds" resultType="long">
+    select id from user
+    <include refid="where"></include>
+    <include refid="maxLimit"></include>
+  </select>
+
+
+  <select id="queryPage" resultType="User">
     <include refid="queryList"></include>
     <include refid="where"></include>
   </select>
 
-  <select id="queryWithoutPage" resultType="user">
+  <select id="query" resultType="User">
     <include refid="queryList"></include>
     <include refid="where"></include>
     <include refid="maxLimit"></include>
   </select>
 
-  <select id="queryOne" resultType="user">
-    select * from user
-    <include refid="where"></include>
-    limit 1
-  </select>
 
   <select id="has" resultType="int">
     select 1 from user
@@ -128,10 +139,30 @@
     <include refid="where"></include>
   </select>
 
-  <select id="getIds" resultType="long">
-    select id from user
-    <include refid="where"></include>
-    <include refid="maxLimit"></include>
-  </select>
+
+  <sql id="maxLimit">
+    limit 1000
+  </sql>
+
+  <sql id="queryList">
+    SELECT id,name,address
+    FROM
+      user
+  </sql>
+
+  <sql id="where">
+    <trim prefix="WHERE" prefixOverrides="AND">
+      			<if test="id != null">
+				AND id=#{id}
+			</if>
+			<if test="name != null">
+				AND name=#{name}
+			</if>
+			<if test="address != null">
+				AND address=#{address}
+			</if>
+
+    </trim>
+  </sql>
 
 </mapper>
